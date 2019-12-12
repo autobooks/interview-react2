@@ -15,13 +15,38 @@ const useStyles = makeStyles(theme => ({
 export default function Activity({activity}) {
   const classes = useStyles();
 
+  console.log(activity.startTime);
+
+  const startTime = new Date(activity.startTime);
+
+  const endTime = new Date(startTime.getTime() + activity.duration);
+
+  const durationString = daysHoursMinutes(activity.duration);
+
   return (
       <TableRow>
-        <TableCell>Dessert (100g serving)</TableCell>
-        <TableCell align="right">Calories</TableCell>
-        <TableCell align="right">Fat&nbsp;(g)</TableCell>
-        <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-        <TableCell align="right">Protein&nbsp;(g)</TableCell>
+        <TableCell align="right">{startTime.toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' })}</TableCell>
+        <TableCell align="right">{endTime.toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' })}</TableCell>
+        <TableCell align="right">{durationString}</TableCell>
+        <TableCell align="right">{activity.description}</TableCell>
       </TableRow>
   );
+}
+
+function daysHoursMinutes(ms){
+    let cd = 24 * 60 * 60 * 1000,
+        ch = 60 * 60 * 1000,
+        days = Math.floor(ms / cd),
+        hours = Math.floor( (ms - days * cd) / ch),
+        minutes = Math.round( (ms - days * cd - hours * ch) / 60000),
+        pad = function(n){ return n < 10 ? '0' + n : n; };
+  if( minutes === 60 ){
+    hours += 1;
+    minutes = 0;
+  }
+  if( hours === 24 ){
+    days += 1;
+    hours = 0;
+  }
+  return [days, pad(hours), pad(minutes)].join(':');
 }
