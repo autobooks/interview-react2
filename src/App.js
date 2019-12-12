@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles, createMuiTheme, ThemeProvider  } from '@material-ui/core/styles';
 import ActivityLog from './components/ActivityLog';
 import AddActivityButton from './components/AddActivityButton';
+import AddActivityDialog from './components/AddActivityDialog';
 import { StoreProvider } from "./store";
 import initialState from "./store/initialState";
 import reducers from "./reducers"
@@ -35,13 +36,12 @@ function App() {
 
   const classes = useStyles();
 
-  console.log(reducers);
-
   return (
     <ThemeProvider theme={theme}>
       <StoreProvider reducer={reducers} initialState={initialState}>
         <div className={classes.root}>
           <ActivityLog />
+          <AddActivityDialog />
         </div>
       </StoreProvider>
     </ThemeProvider>

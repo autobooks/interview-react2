@@ -9,5 +9,6 @@ const createReducer = handlers => (state, action) => {
 };
 
 export default createReducer({
-  addActivity: activity.add
+  addActivity: activity.add,
+  setActivityDialog: activity.setActivityDialog
 });
