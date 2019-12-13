@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Activity({activity}) {
+export default function AddActivityButton({activity}) {
   const classes = useStyles();
 
   const [{ activities }, dispatch] = useStore();

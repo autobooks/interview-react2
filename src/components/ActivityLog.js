@@ -29,8 +29,9 @@ export default function ActivityLog() {
         <TableHead>
           <TableCell align="right">Start Time</TableCell>
           <TableCell align="right">End Time</TableCell>
-          <TableCell align="right">Duration</TableCell>
+          <TableCell align="right">Time Left</TableCell>
           <TableCell align="right">Description</TableCell>
+          <TableCell align="right">Pause/Resume</TableCell>
         </TableHead>
         <TableBody>
           {activities.map(activity => (
