@@ -105,6 +105,8 @@ export default function AddActivityDialog({activity}) {
               value={duration}
               onChange={handleDurationChange}
             >
+              <MenuItem value={60000}>1 Minute</MenuItem>
+              <MenuItem value={300000}>5 Minutes</MenuItem>
               <MenuItem value={600000}>10 Minutes</MenuItem>
               <MenuItem value={1800000}>30 Minutes</MenuItem>
               <MenuItem value={3600000}>60 Minutes</MenuItem>

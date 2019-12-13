@@ -1,4 +1,6 @@
 export const add = (state, { payload }) => {
+
+
  return {
   ...state,
   activities: [...state.activities, payload.activity],
@@ -34,10 +36,26 @@ export const setActivityTimeSpent = (state, {payload}) => {
     return activity.id === payload.id;
   });
 
-
-  console.log(payload.timeSpent);
+  console.log('setting time spent in reducer');
+  console.log(payload.timeSpent)
 
   activity.timeSpent = payload.timeSpent;
+
+  return {
+    ...state,
+  }
+};
+
+export const setActivityFinished = (state, {payload}) => {
+
+  const currentActivities = state.activities;
+
+  const activity = currentActivities.find(activity => {
+    return activity.id === payload.id;
+  });
+
+  activity.finished = payload.finished;
+  activity.endTime = payload.endTime;
 
   return {
     ...state,

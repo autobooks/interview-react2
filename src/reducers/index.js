@@ -12,5 +12,6 @@ export default createReducer({
   addActivity: activity.add,
   setActivityDialog: activity.setActivityDialog,
   setActivityTimeRunning: activity.setActivityTimeRunning,
-  setActivityTimeSpent: activity.setActivityTimeSpent
+  setActivityTimeSpent: activity.setActivityTimeSpent,
+  setActivityFinished: activity.setActivityFinished,
 });

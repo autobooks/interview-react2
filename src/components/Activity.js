@@ -7,17 +7,36 @@ import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
 
 import { useStore } from '../store';
-import { setActivityTimeRunning, setActivityTimeSpent } from '../actions';
+import { setActivityTimeRunning, setActivityTimeSpent, setActivityFinished } from '../actions';
 
 const useStyles = makeStyles(theme => ({
+  activity: {
+    position: 'relative',
+    '&:after': {
+      height: '81px',
+      width: 'calc(var(--percent-complete) * 100%)',
+      content: "''",
+      position: 'absolute',
+      left: 0
+    }
+  },
   timeRunning: {
-    backgroundColor: 'rgba(76, 175, 80, 0.32)'
+    backgroundColor: 'rgba(76, 175, 80, 0.32)',
+    '&:after': {
+      backgroundColor: 'rgba(76, 175, 80, 0.2)'
+    }
   },
   timePaused: {
-    backgroundColor: 'rgba(255, 193, 7, 0.22)'
+    backgroundColor: 'rgba(255, 193, 7, 0.22)',
+    '&:after': {
+      backgroundColor: 'rgba(255, 193, 7, 0.2)'
+    }
   },
   done: {
-    backgroundColor: 'rgba(255, 193, 7, 0.60)'
+    backgroundColor: 'rgba(44, 119, 184, 0.97)',
+    '&:after': {
+      backgroundColor: 'rgba(44, 119, 184, 0)'
+    }
   }
 }));
 
@@ -30,13 +49,11 @@ export default function Activity({activity}) {
   //calculating relative time
   const startTime = new Date(activity.startTime);
 
-  const endTime = new Date(startTime.getTime() + activity.duration);
-
   const timeRemaining = Math.max(0, activity.duration - activity.timeSpent);
 
-  const durationString = daysHoursMinutes(timeRemaining);
+  const durationString = msToTime(timeRemaining);
 
-  const timeForTask = (startTime < currentTime && currentTime < endTime);
+  const timeForTask = (startTime < currentTime && timeRemaining !== 0);
 
   const timeRunning = timeForTask && !activity.paused;
 
@@ -44,9 +61,13 @@ export default function Activity({activity}) {
   useEffect(() => {
     setInterval(() => {
       setCurrentTime(new Date());
-      if(!activity.paused) {
+      if(!activity.paused && timeForTask) {
         const timeSpent = activity.timeSpent + 1000;
-        dispatch(setActivityTimeSpent({timeSpent, id: activity.id}))
+        if(!isNaN(timeSpent)) {
+          console.log('setting time',timeSpent);
+          dispatch(setActivityTimeSpent({timeSpent, id: activity.id}));
+        }
+
       }
     }, 1000);
   }, []);
@@ -64,10 +85,15 @@ export default function Activity({activity}) {
       icon = "play_arrow";
       activityClass = classes.timePaused;
     }
-    else if(timeRemaining === 0) {
+    else if(activity.finished) {
       icon = "";
       disabledButton = true;
       activityClass = "";
+      dispatch(setActivityFinished({
+        finished: true,
+        endTime:new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }),
+        id: activity.id
+      }));
     }
     else {
       icon = "";
@@ -81,10 +107,15 @@ export default function Activity({activity}) {
     dispatch(setActivityTimeRunning({paused: newValue, id: activity.id}));
   };
 
+
+  const percentComplete = (activity.timeSpent / activity.duration);
+  const percentCompleteValue = percentComplete <= 1 ? percentComplete : 1;
+  const endTime = activity.endTime ? activity.endTime : "";
+
   return (
-      <TableRow className={activityClass}>
+      <TableRow className={activityClass + " " + classes.activity} style={{"--percent-complete": percentCompleteValue}}>
         <TableCell align="right">{startTime.toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' })}</TableCell>
-        <TableCell align="right">{endTime.toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' })}</TableCell>
+        <TableCell align="right">{endTime}</TableCell>
         <TableCell align="right">{durationString}</TableCell>
         <TableCell align="right">{activity.description}</TableCell>
           <TableCell align="right">
@@ -96,20 +127,15 @@ export default function Activity({activity}) {
   );
 }
 
-function daysHoursMinutes(ms){
-    let cd = 24 * 60 * 60 * 1000,
-        ch = 60 * 60 * 1000,
-        days = Math.floor(ms / cd),
-        hours = Math.floor( (ms - days * cd) / ch),
-        minutes = Math.round( (ms - days * cd - hours * ch) / 60000),
-        pad = function(n){ return n < 10 ? '0' + n : n; };
-  if( minutes === 60 ){
-    hours += 1;
-    minutes = 0;
-  }
-  if( hours === 24 ){
-    days += 1;
-    hours = 0;
-  }
-  return [days, pad(hours), pad(minutes)].join(':');
+function msToTime(duration) {
+  let milliseconds = parseInt((duration % 1000) / 100),
+      seconds = Math.floor((duration / 1000) % 60),
+      minutes = Math.floor((duration / (1000 * 60)) % 60),
+      hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+      hours = (hours < 10) ? "0" + hours : hours;
+      minutes = (minutes < 10) ? "0" + minutes : minutes;
+      seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+  return hours + ":" + minutes + ":" + seconds;
 }

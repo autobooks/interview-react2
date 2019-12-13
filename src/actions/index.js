@@ -22,9 +22,17 @@ export const setActivityTimeRunning = (payload) => {
     payload
   }
 }
+
 export const setActivityTimeSpent = (payload) => {
   return {
     type: "setActivityTimeSpent",
+    payload
+  }
+}
+
+export const setActivityFinished = (payload) => {
+  return {
+    type: "setActivityFinished",
     payload
   }
 }

@@ -23,6 +23,15 @@ export default function ActivityLog() {
 
   const [{ activities }, dispatch] = useStore();
 
+  //this is where we will update session storage
+  sessionStorage.setItem('activities', JSON.stringify(activities));
+
+  const sortedActivities = activities.sort((a, b) => {
+    if (a.startTime < b.startTime) return 1;
+    if (b.startTime < a.startTime) return -1;
+
+  });
+
   return (
     <Paper className={classes.root}>
       <Table className={classes.table} aria-label="simple table">
@@ -34,7 +43,7 @@ export default function ActivityLog() {
           <TableCell align="right">Pause/Resume</TableCell>
         </TableHead>
         <TableBody>
-          {activities.map(activity => (
+          {sortedActivities.map(activity => (
             <Activity key={activity.id} activity={activity} />
           ))}
         </TableBody>
