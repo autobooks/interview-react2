@@ -16,6 +16,19 @@ export const setActivityDialog = (payload) => {
   }
 }
 
+export const setActivityTimeRunning = (payload) => {
+  return {
+    type: "setActivityTimeRunning",
+    payload
+  }
+}
+export const setActivityTimeSpent = (payload) => {
+  return {
+    type: "setActivityTimeSpent",
+    payload
+  }
+}
+
 
 function randomString() {
    var result           = '';

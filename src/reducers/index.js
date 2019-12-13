@@ -10,5 +10,7 @@ const createReducer = handlers => (state, action) => {
 
 export default createReducer({
   addActivity: activity.add,
-  setActivityDialog: activity.setActivityDialog
+  setActivityDialog: activity.setActivityDialog,
+  setActivityTimeRunning: activity.setActivityTimeRunning,
+  setActivityTimeSpent: activity.setActivityTimeSpent
 });
